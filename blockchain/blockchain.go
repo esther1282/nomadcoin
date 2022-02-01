@@ -7,9 +7,10 @@ import (
 )
 
 type Block struct {
-	Data     string
-	Hash     string
-	PrevHash string
+	Data     string `json:"data"`
+	Hash     string `json:"hash"`
+	PrevHash string `json:"prevHas,omitempty"`
+	Height   int    `json:"height"`
 }
 type blockchain struct {
 	blocks []*Block
@@ -30,7 +31,7 @@ func getLastHash() string {
 	return GetBlockchain().blocks[totalBlocks-1].Hash
 }
 func createBlock(data string) *Block {
-	newBlock := Block{data, "", getLastHash()}
+	newBlock := Block{data, "", getLastHash(), len(GetBlockchain().blocks) + 1}
 	newBlock.calculateHash()
 	return &newBlock
 }
@@ -49,4 +50,8 @@ func GetBlockchain() *blockchain { //블록체인이 초기화 되었는지 알 
 
 func (b *blockchain) AllBlocks() []*Block {
 	return b.blocks
+}
+
+func (b *blockchain) GetBlock(height int) *Block { //block 하나를 가져오는 함수
+	return b.blocks[height-1]
 }
